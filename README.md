@@ -22,5 +22,10 @@ BÀI THỰC HÀNH SỐ 1: tạo dự án MVC đầu tiên và đẩy lên github
    - Nộp bài thực hành HTML, CSS (Boostrap/W3.css), bao gồm các thư mục: HTML, CSS, DemoMVC
    - Tích hợp thư viện CSS và trong project DemoMVC: Views/Shared/_Layout.cshtml
    - Chạy project: dotnet watch run
-   - Gặp lỗi: "Could not find a MSBuild project file in" => Bị nhầm thư mục gốc chứa project => cần cd tới thư mục chưa project
-5. 
+   - Gặp lỗi: "Could not find a MSBuild project file in" => Bị nhầm thư mục gốc chứa project => cần cd tới thư mục chứa project
+5. Ngày 10/02: Làm việc với Models, Views, Controllers
+   - Tạo controller, Tạo Action (Chú ý namespace, ví dụ Project_Name.Folder_Name)
+   - Gặp thông báo: "InvalidOperationException: The view 'Contact' was not found. The following locations were searched" => Cần tạo View tương ứng
+   - Gửi dữ liệu từ View lên Controller => Sử dụng Form trên HTML, chú ý "name" của các thẻ input
+   - Controller nhận dữ liệu từ View gửi lên: chú ý [HttpPost], Parameter
+   - Gửi dữ liệu từ Controller về View và hiển thị trên view: Sử dụng ViewBag/ViewData/ViewTemplate
