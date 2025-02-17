@@ -29,3 +29,8 @@ BÀI THỰC HÀNH SỐ 1: tạo dự án MVC đầu tiên và đẩy lên github
    - Gửi dữ liệu từ View lên Controller => Sử dụng Form trên HTML, chú ý "name" của các thẻ input
    - Controller nhận dữ liệu từ View gửi lên: chú ý [HttpPost], Parameter
    - Gửi dữ liệu từ Controller về View và hiển thị trên view: Sử dụng ViewBag/ViewData/ViewTemplate
+6. Bài thực hành 17/02
+   - Bài 1: Tính chỉ số BMI: Tạo Model (có các thuộc tính liên quan đến tính chỉ số BMI),  Tạo form gửi dữ liệu bao gồm các chỉ số từ View lên Controller,Nhận và tính toán dữ liệu gửi lên sau đó gửi thông báo về view (ViewBag)
+   - Bài 2: Tính điểm môn học dựa trên điểm thành phần A, B, C
+   - Bài 3: Tính tiền hoá đơn dựa trên số lượng và đơn giá
+7. 
