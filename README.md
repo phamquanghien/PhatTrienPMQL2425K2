@@ -33,4 +33,11 @@ BÀI THỰC HÀNH SỐ 1: tạo dự án MVC đầu tiên và đẩy lên github
    - Bài 1: Tính chỉ số BMI: Tạo Model (có các thuộc tính liên quan đến tính chỉ số BMI),  Tạo form gửi dữ liệu bao gồm các chỉ số từ View lên Controller,Nhận và tính toán dữ liệu gửi lên sau đó gửi thông báo về view (ViewBag)
    - Bài 2: Tính điểm môn học dựa trên điểm thành phần A, B, C
    - Bài 3: Tính tiền hoá đơn dựa trên số lượng và đơn giá
-7. 
+7. Ngày 24/02: Làm việc với cơ sở dữ liệu
+   - Sử dụng SQL Server qua docker: tải và cài đặt docker (https://www.docker.com/products/docker-desktop/)
+      + Tải image docker: docker pull mcr.microsoft.com/mssql/server:2019-latest 
+      + Tạo container: docker run -d --name sql_server_container -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=YourStrong!Passw0rd' -p 1433:1433 mcr.microsoft.com/mssql/server:2019-latest
+   - Làm việc với SQLite: cần tải Dbeaver (https://dbeaver.io/download/)
+   - Cài đặt các package (tham khảo slide hoặc link: https://learn.microsoft.com/vi-vn/aspnet/core/tutorials/first-mvc-app/adding-model?view=aspnetcore-9.0&tabs=visual-studio-code)
+   - Xây dựng chức năng CRUD dữ liệu (Tạo controller và view)
+8. 

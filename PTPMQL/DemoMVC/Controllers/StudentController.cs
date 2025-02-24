@@ -1,19 +1,24 @@
+using DemoMVC.Data;
 using DemoMVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DemoMVC.Controllers
 {
     public class StudentController : Controller
     {
-        //khai bao cac action tuong ung
-        //Action tra ve du lieu toan bo ban ghi trong bang Student
-        public IActionResult Index()
+        //khai bao dbcontext
+        private readonly ApplicationDbContext _context;
+        public StudentController(ApplicationDbContext context)
         {
-            //Khai bao 1 doi tuong Student va gan gia tri
-            Student std = new Student();
-            std.Id = "1";
-            std.FullName = "Nguyen Van A";
-            return View(std);
+            _context = context;
+        }
+        public async Task<IActionResult> Index()
+        {
+            //lay danh sach cac ban ghi trong bang Students
+            var students = await _context.Students.ToListAsync();
+            //tra ve view kem theo la du lieu students
+            return View(students);
         }
         [HttpGet]
         public IActionResult Create()
@@ -21,10 +26,11 @@ namespace DemoMVC.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Create(Student std)
+        public async Task<IActionResult> Create(Student std)
         {
-            ViewBag.Message = "ID:" + std.Id + " FullName:" + std.FullName;
-            return View();
+            await _context.AddAsync(std);
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
     }
 }
