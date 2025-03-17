@@ -2,6 +2,7 @@
 using DemoMVC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DemoMVC.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250317005723_Create_Table_Person")]
+    partial class Create_Table_Person
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.2");
@@ -22,11 +25,7 @@ namespace DemoMVC.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Address")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasMaxLength(8)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FullName")
@@ -36,10 +35,6 @@ namespace DemoMVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Person");
-
-                    b.HasDiscriminator().HasValue("Person");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("DemoMVC.Models.Student", b =>
@@ -57,24 +52,6 @@ namespace DemoMVC.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Students");
-                });
-
-            modelBuilder.Entity("DemoMVC.Models.Employee", b =>
-                {
-                    b.HasBaseType("DemoMVC.Models.Person");
-
-                    b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("EmpId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasDiscriminator().HasValue("Employee");
                 });
 #pragma warning restore 612, 618
         }
