@@ -24,6 +24,21 @@ namespace DemoMVC.Controllers
         {
             return View(await _context.Person.ToListAsync());
         }
+        public async Task<IActionResult> CreateNewPerson()
+        {
+            //Khoi tao 1 doi tuong kieu Person
+            var ps = new Person();
+            //gan gia tri cho cac thuoc tinh cua doi tuong tren (ps)
+            ps.Id = "PS100";
+            ps.FullName = "dfsdfsdfsdf";
+            ps.Address = "dsfsdfsdf";
+            //them doi tuong vao trong context
+            _context.Add(ps);
+            //luu thay doi vao csdl
+            await _context.SaveChangesAsync();
+            //dieu huong ve trang Index
+            return RedirectToAction(nameof(Index));
+        }
 
         // GET: Person/Details/5
         public async Task<IActionResult> Details(string id)
