@@ -44,4 +44,8 @@ BÀI THỰC HÀNH SỐ 1: tạo dự án MVC đầu tiên và đẩy lên github
    - Sinh mã nguồn tự động: dotnet aspnet-codegenerator controller -name PersonController -m Person -dc DemoMVC.Data.ApplicationDbContext --relativeFolderPath Controllers --useDefaultLayout --referenceScriptLibraries --databaseProvider sqlite
    - Kế thừa: Giả sử class Employee (10 thuộc tính) kế thừa từ class Person (5 thuộc tính) => Employee : Person => Employee có 15 thuộc tính
    - Cơ chế validate dữ liệu với Model
-9.  
+9.  Buổi 7:
+   - Chạy debug chương trình (Xem mã nguồn file Debug.txt).
+   - Kế thừa trong C#
+   - Nhập xuất dữ liệu Excel với thư viện EPPLUS
+10. 

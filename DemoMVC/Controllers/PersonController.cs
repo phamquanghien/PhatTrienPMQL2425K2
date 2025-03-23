@@ -7,12 +7,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DemoMVC.Data;
 using DemoMVC.Models;
+using DemoMVC.Models.Process;
+using System.Data;
+using OfficeOpenXml;
 
 namespace DemoMVC.Controllers
 {
     public class PersonController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private ExcelProcess _excelProcess = new ExcelProcess();
 
         public PersonController(ApplicationDbContext context)
         {
@@ -49,9 +53,6 @@ namespace DemoMVC.Controllers
             return View();
         }
 
-        // POST: Person/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FullName,Address")] Person person)
@@ -63,6 +64,59 @@ namespace DemoMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file != null)
+            {
+                string fileExtension = Path.GetExtension(file.FileName);
+                if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                {
+                    ModelState.AddModelError("", "Please choose excel file to upload!");
+                }
+                else
+                {
+                    //rename file when upload to server
+                    var fileName = DateTime.Now.ToShortTimeString() + fileExtension;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory() + "/Uploads/Excels" + fileName);
+                    var fileLocation = new FileInfo(filePath).ToString();
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    //save file to server
+                    await file.CopyToAsync(stream);
+                    var dt = _excelProcess.ExcelToDataTable(fileLocation);
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        var ps = new Person();
+                        ps.Id = dt.Rows[i][0].ToString()!;
+                        ps.FullName = dt.Rows[i][1].ToString()!;
+                        ps.Address = dt.Rows[i][2].ToString();
+                        await _context.AddAsync(ps);
+                    }
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(nameof(Create));
+        }
+        public async Task<IActionResult> Download()
+        {
+            var fileName = Guid.NewGuid().ToString() + ".xlsx";
+            using ExcelPackage excelPackage = new();
+            ExcelWorksheet excelWorksheet = excelPackage.Workbook.Worksheets.Add("Sheet1");
+            excelWorksheet.Cells["A1"].Value = "PersonID";
+            excelWorksheet.Cells["B1"].Value = "FullName";
+            excelWorksheet.Cells["C1"].Value = "Address";
+            //get all person from database
+            var personList = await _context.Person.ToListAsync();
+            //fill data to worksheet
+            excelWorksheet.Cells["A2"].LoadFromCollection(personList, true);
+
+            var stream = new MemoryStream();
+            excelPackage.SaveAs(stream);
+            stream.Position = 0;
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
         }
 
         // GET: Person/Edit/5
@@ -81,9 +135,6 @@ namespace DemoMVC.Controllers
             return View(person);
         }
 
-        // POST: Person/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,FullName,Address")] Person person)
