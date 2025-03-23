@@ -7,12 +7,15 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DemoMVC.Data;
 using DemoMVC.Models;
+using DemoMVC.Models.Process;
+using System.Data;
 
 namespace DemoMVC.Controllers
 {
     public class PersonController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private ExcelProcess _excelProcess = new ExcelProcess();
 
         public PersonController(ApplicationDbContext context)
         {
@@ -63,6 +66,41 @@ namespace DemoMVC.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(person);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Upload(IFormFile file)
+        {
+            if (file != null)
+            {
+                string fileExtension = Path.GetExtension(file.FileName);
+                if (fileExtension != ".xls" && fileExtension != ".xlsx")
+                {
+                    ModelState.AddModelError("", "Please choose excel file to upload!");
+                }
+                else
+                {
+                    //rename file when upload to server
+                    var fileName = DateTime.Now.ToShortTimeString() + fileExtension;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory() + "/Uploads/Excels" + fileName);
+                    var fileLocation = new FileInfo(filePath).ToString();
+                    using var stream = new FileStream(filePath, FileMode.Create);
+                    //save file to server
+                    await file.CopyToAsync(stream);
+                    var dt = _excelProcess.ExcelToDataTable(fileLocation);
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        var ps = new Person();
+                        ps.Id = dt.Rows[i][0].ToString()!;
+                        ps.FullName = dt.Rows[i][1].ToString()!;
+                        ps.Address = dt.Rows[i][2].ToString();
+                        await _context.AddAsync(ps);
+                    }
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(nameof(Create));
         }
 
         // GET: Person/Edit/5
